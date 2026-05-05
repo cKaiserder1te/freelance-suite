@@ -1,0 +1,13 @@
+Metadata-Version: 2.4
+Name: freelance-dashboard
+Version: 0.1.0
+Summary: Local web dashboard for freelance-toolkit data.
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: fastapi
+Requires-Dist: uvicorn[standard]
+Requires-Dist: sqlmodel
+
+# freelance-dashboard
+
+Local web dashboard for freelance-toolkit data.

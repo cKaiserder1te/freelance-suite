@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "freelance-toolkit"
+version = "0.1.0"
+description = "Your terminal-native freelance OS. Track time, log projects, export reports - without ever leaving the CLI."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "typer[all]",
+    "rich",
+    "sqlmodel",
+    "toml",
+]
+
+[project.optional-dependencies]
+tui = [
+    "textual",
+]
+dev = [
+    "pytest",
+    "black",
+    "ruff",
+    "mypy",
+]
+
+[project.scripts]
+ft = "freelance_toolkit.main:app"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

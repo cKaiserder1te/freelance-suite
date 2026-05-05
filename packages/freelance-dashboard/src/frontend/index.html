@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>freelance-dashboard</title>
+    <link rel="stylesheet" href="/css/main.css" />
+    <link rel="stylesheet" href="/css/charts.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">fd</div>
+          <div>
+            <div class="brand-title">freelance-dashboard</div>
+            <div class="brand-subtitle">local insights</div>
+          </div>
+        </div>
+        <nav class="nav">
+          <a class="nav-link" href="#overview" data-route="overview">[O] Overview</a>
+          <a class="nav-link" href="#revenue" data-route="revenue">[R] Revenue</a>
+          <a class="nav-link" href="#hours" data-route="hours">[H] Hours</a>
+          <a class="nav-link" href="#clients" data-route="clients">[C] Clients</a>
+          <a class="nav-link" href="#invoices" data-route="invoices">[I] Invoices</a>
+        </nav>
+        <div class="sidebar-footer">
+          <div class="status-pill">Local-only data</div>
+        </div>
+      </aside>
+
+      <div class="main">
+        <header class="topbar">
+          <div>
+            <div class="topbar-title">freelance-dashboard</div>
+            <div class="topbar-subtitle">Revenue, hours, and clients at a glance</div>
+          </div>
+          <div class="topbar-date" id="current-date"></div>
+        </header>
+
+        <main class="content">
+          <section class="page" data-page="overview">
+            <div class="kpi-grid">
+              <div class="kpi-card" data-kpi="mtd_revenue">
+                <div class="kpi-value" id="kpi-mtd-revenue">--</div>
+                <div class="kpi-meta">
+                  <span>Revenue MTD</span>
+                  <span class="kpi-trend">^</span>
+                </div>
+              </div>
+              <div class="kpi-card" data-kpi="mtd_hours">
+                <div class="kpi-value" id="kpi-mtd-hours">--</div>
+                <div class="kpi-meta">
+                  <span>Hours MTD</span>
+                  <span class="kpi-trend">^</span>
+                </div>
+              </div>
+              <div class="kpi-card" data-kpi="ytd_revenue">
+                <div class="kpi-value" id="kpi-ytd-revenue">--</div>
+                <div class="kpi-meta">
+                  <span>Revenue YTD</span>
+                  <span class="kpi-trend">^</span>
+                </div>
+              </div>
+              <div class="kpi-card" data-kpi="active_projects_count">
+                <div class="kpi-value" id="kpi-active-projects">--</div>
+                <div class="kpi-meta">
+                  <span>Active Projects</span>
+                  <span class="kpi-trend">^</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h2>Revenue trend</h2>
+                <span class="card-subtitle">Last 12 months</span>
+              </div>
+              <canvas id="overview-revenue-chart" height="120"></canvas>
+            </div>
+
+            <div class="grid-2">
+              <div class="card">
+                <div class="card-header">
+                  <h2>Client mix</h2>
+                  <span class="card-subtitle">Top revenue sources</span>
+                </div>
+                <canvas id="overview-client-chart" height="160"></canvas>
+              </div>
+              <div class="card">
+                <div class="card-header">
+                  <h2>Activity heatmap</h2>
+                  <span class="card-subtitle">Hours per day</span>
+                </div>
+                <canvas id="overview-heatmap" width="520" height="140"></canvas>
+              </div>
+            </div>
+          </section>
+
+          <section class="page" data-page="revenue">
+            <div class="page-header">
+              <h1>Revenue</h1>
+              <div class="controls">
+                <label>
+                  Period
+                  <select id="revenue-period">
+                    <option value="month">Month</option>
+                    <option value="quarter">Quarter</option>
+                    <option value="year">Year</option>
+                  </select>
+                </label>
+                <label>
+                  From
+                  <input type="month" id="revenue-from" />
+                </label>
+                <label>
+                  To
+                  <input type="month" id="revenue-to" />
+                </label>
+              </div>
+            </div>
+            <div class="card">
+              <canvas id="revenue-chart" height="140"></canvas>
+            </div>
+          </section>
+
+          <section class="page" data-page="hours">
+            <div class="page-header">
+              <h1>Hours</h1>
+              <div class="controls">
+                <label>
+                  From
+                  <input type="date" id="hours-from" />
+                </label>
+                <label>
+                  To
+                  <input type="date" id="hours-to" />
+                </label>
+              </div>
+            </div>
+            <div class="card">
+              <canvas id="hours-chart" height="180"></canvas>
+            </div>
+          </section>
+
+          <section class="page" data-page="clients">
+            <div class="page-header">
+              <h1>Clients</h1>
+              <span class="card-subtitle">Sorted by revenue</span>
+            </div>
+            <div class="card">
+              <table class="data-table" id="clients-table">
+                <thead>
+                  <tr>
+                    <th><button class="sort-button" data-sort="name">Name</button></th>
+                    <th><button class="sort-button" data-sort="total_hours">Hours</button></th>
+                    <th><button class="sort-button" data-sort="total_revenue">Revenue</button></th>
+                    <th><button class="sort-button" data-sort="avg_rate">Avg Rate</button></th>
+                    <th><button class="sort-button" data-sort="project_count">Projects</button></th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="page" data-page="invoices">
+            <div class="page-header">
+              <h1>Invoices</h1>
+              <div class="controls">
+                <label>
+                  Status
+                  <select id="invoice-status">
+                    <option value="open">Open</option>
+                    <option value="paid">Paid</option>
+                    <option value="all">All</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+            <div class="card">
+              <table class="data-table" id="invoices-table">
+                <thead>
+                  <tr>
+                    <th>Number</th>
+                    <th>Client</th>
+                    <th>Amount</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/charts.js"></script>
+    <script src="/js/app.js"></script>
+  </body>
+</html>

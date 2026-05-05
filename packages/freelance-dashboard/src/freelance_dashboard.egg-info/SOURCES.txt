@@ -1,0 +1,17 @@
+README.md
+pyproject.toml
+src/backend/__init__.py
+src/backend/main.py
+src/backend/queries.py
+src/backend/routes/__init__.py
+src/backend/routes/clients.py
+src/backend/routes/hours.py
+src/backend/routes/invoices.py
+src/backend/routes/revenue.py
+src/freelance_dashboard.egg-info/PKG-INFO
+src/freelance_dashboard.egg-info/SOURCES.txt
+src/freelance_dashboard.egg-info/dependency_links.txt
+src/freelance_dashboard.egg-info/entry_points.txt
+src/freelance_dashboard.egg-info/requires.txt
+src/freelance_dashboard.egg-info/top_level.txt
+tests/test_routes.py

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>Invoice {{ invoice.meta.number }}</title>
+		<style>
+			:root {
+				--bg: #ffffff;
+				--text: #111827;
+				--muted: #6b7280;
+				--border: #e5e7eb;
+			}
+
+			* {
+				box-sizing: border-box;
+			}
+
+			body {
+				margin: 0;
+				padding: 40px 24px;
+				background: var(--bg);
+				color: var(--text);
+				font-family: "Courier New", Courier, monospace;
+				font-size: 12px;
+				line-height: 1.6;
+			}
+
+			.page {
+				max-width: 700px;
+				margin: 0 auto;
+			}
+
+			.title {
+				font-size: 20px;
+				letter-spacing: 2px;
+			}
+
+			.separator {
+				margin: 16px 0;
+				color: var(--muted);
+			}
+
+			.section {
+				margin-bottom: 16px;
+			}
+
+			table {
+				width: 100%;
+				border-collapse: collapse;
+			}
+
+			th,
+			td {
+				padding: 6px 4px;
+				border-bottom: 1px solid var(--border);
+				text-align: left;
+			}
+
+			th.amount,
+			td.amount {
+				text-align: right;
+			}
+
+			.totals table {
+				width: 100%;
+			}
+
+			.totals td {
+				border-bottom: none;
+			}
+
+			.totals .label {
+				color: var(--muted);
+			}
+
+			.totals .grand {
+				font-weight: 700;
+				border-top: 1px solid var(--border);
+				padding-top: 8px;
+			}
+
+			@media print {
+				body {
+					padding: 24px 16px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="page">
+			<div class="title">INVOICE</div>
+			<div class="separator">------------------------------------------------------------</div>
+
+			<div class="section">
+				<div>{{ invoice.sender.name }}</div>
+				<div>{{ invoice.sender.address }}</div>
+				<div>{{ invoice.sender.email }}</div>
+			</div>
+
+			<div class="separator">------------------------------------------------------------</div>
+
+			<div class="section">
+				<div>Bill To: {{ invoice.client.name }}</div>
+				<div>{{ invoice.client.address }}</div>
+				{% if invoice.client.email %}<div>{{ invoice.client.email }}</div>{% endif %}
+			</div>
+
+			<div class="separator">------------------------------------------------------------</div>
+
+			<div class="section">
+				<div>Invoice No: {{ invoice.meta.number }}</div>
+				<div>Date: {{ invoice.meta.date }}</div>
+				<div>Due: {{ invoice.meta.due_date }}</div>
+			</div>
+
+			<div class="separator">------------------------------------------------------------</div>
+
+			<table>
+				<thead>
+					<tr>
+						<th>Description</th>
+						<th class="amount">Qty</th>
+						<th class="amount">Unit</th>
+						<th class="amount">Price</th>
+						<th class="amount">Total</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for item in calculated.formatted_items %}
+					<tr>
+						<td>{{ item.description }}</td>
+						<td class="amount">{{ item.quantity }}</td>
+						<td class="amount">{{ item.unit }}</td>
+						<td class="amount">{{ item.unit_price }}</td>
+						<td class="amount">{{ item.total }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+
+			<div class="separator">------------------------------------------------------------</div>
+
+			<div class="totals">
+				<table>
+					<tr>
+						<td class="label">Subtotal</td>
+						<td class="amount">{{ calculated.subtotal }}</td>
+					</tr>
+					<tr>
+						<td class="label">Tax</td>
+						<td class="amount">{{ calculated.total_tax }}</td>
+					</tr>
+					<tr>
+						<td class="grand">Grand Total</td>
+						<td class="grand amount">{{ calculated.grand_total }}</td>
+					</tr>
+				</table>
+			</div>
+
+			<div class="separator">------------------------------------------------------------</div>
+
+			<div class="section">
+				{% if invoice.meta.payment_terms %}
+				<div>Payment Terms: {{ invoice.meta.payment_terms }}</div>
+				{% endif %}
+				{% if invoice.meta.notes %}
+				<div>Notes: {{ invoice.meta.notes }}</div>
+				{% endif %}
+			</div>
+		</div>
+	</body>
+</html>

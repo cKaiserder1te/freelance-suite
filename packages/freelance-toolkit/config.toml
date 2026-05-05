@@ -1,0 +1,14 @@
+[defaults]
+currency = "EUR"
+tax_note = "Gemaess 19 UStG wird keine Umsatzsteuer berechnet."
+rounding = "up"
+time_format = "24h"
+
+[invoice]
+template = "german"
+output_dir = "~/Documents/Invoices"
+number_format = "{YEAR}-{SEQ:03d}"
+
+[display]
+theme = "dark"
+week_starts = "monday"

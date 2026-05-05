@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>Invoice {{ invoice.meta.number }}</title>
+		<style>
+			:root {
+				--bg: #ffffff;
+				--text: #1f2933;
+				--muted: #6b7280;
+				--border: #e5e7eb;
+				--accent: #111827;
+			}
+
+			* {
+				box-sizing: border-box;
+			}
+
+			body {
+				margin: 0;
+				padding: 40px;
+				background: var(--bg);
+				color: var(--text);
+				font-family: "Helvetica Neue", Arial, sans-serif;
+				font-size: 12px;
+				line-height: 1.5;
+			}
+
+			h1 {
+				margin: 0 0 12px;
+				font-size: 24px;
+				letter-spacing: 0.5px;
+				text-transform: uppercase;
+			}
+
+			table {
+				width: 100%;
+				border-collapse: collapse;
+			}
+
+			.header {
+				width: 100%;
+				margin-bottom: 24px;
+			}
+
+			.header td {
+				vertical-align: top;
+			}
+
+			.logo img {
+				max-width: 180px;
+				height: auto;
+			}
+
+			.sender {
+				text-align: right;
+				font-size: 11px;
+				color: var(--muted);
+			}
+
+			.section {
+				margin-bottom: 24px;
+			}
+
+			.meta td {
+				padding: 4px 0;
+			}
+
+			.items th,
+			.items td {
+				border-bottom: 1px solid var(--border);
+				padding: 8px 6px;
+				text-align: left;
+			}
+
+			.items th {
+				font-size: 11px;
+				text-transform: uppercase;
+				color: var(--muted);
+				letter-spacing: 0.4px;
+			}
+
+			.items td.amount,
+			.items th.amount {
+				text-align: right;
+			}
+
+			.totals {
+				width: 100%;
+				margin-top: 16px;
+			}
+
+			.totals table {
+				width: 40%;
+				margin-left: auto;
+			}
+
+			.totals td {
+				padding: 6px 0;
+			}
+
+			.totals .label {
+				color: var(--muted);
+			}
+
+			.totals .grand {
+				font-size: 14px;
+				font-weight: 700;
+				color: var(--accent);
+				border-top: 1px solid var(--border);
+				padding-top: 8px;
+			}
+
+			.footer {
+				margin-top: 32px;
+				font-size: 11px;
+				color: var(--muted);
+			}
+
+			.notes {
+				margin-top: 12px;
+			}
+
+			@media print {
+				body {
+					padding: 24px;
+				}
+
+				.items th,
+				.items td {
+					padding: 6px 4px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<table class="header">
+			<tr>
+				<td class="logo">
+					{% if invoice.sender.logo %}
+					<img src="{{ invoice.sender.logo }}" alt="Logo" />
+					{% endif %}
+					<h1>Invoice</h1>
+				</td>
+				<td class="sender">
+					<div>{{ invoice.sender.name }}</div>
+					<div>{{ invoice.sender.address }}</div>
+					<div>{{ invoice.sender.email }}</div>
+					{% if invoice.sender.phone %}<div>{{ invoice.sender.phone }}</div>{% endif %}
+					{% if invoice.sender.website %}<div>{{ invoice.sender.website }}</div>{% endif %}
+				</td>
+			</tr>
+		</table>
+
+		<table class="section">
+			<tr>
+				<td style="width: 60%; vertical-align: top;">
+					<strong>Bill To</strong><br />
+					{{ invoice.client.name }}<br />
+					{{ invoice.client.address }}
+					{% if invoice.client.email %}<br />{{ invoice.client.email }}{% endif %}
+				</td>
+				<td style="width: 40%; vertical-align: top;">
+					<table class="meta">
+						<tr>
+							<td>Invoice No.</td>
+							<td class="amount">{{ invoice.meta.number }}</td>
+						</tr>
+						<tr>
+							<td>Date</td>
+							<td class="amount">{{ invoice.meta.date }}</td>
+						</tr>
+						<tr>
+							<td>Due Date</td>
+							<td class="amount">{{ invoice.meta.due_date }}</td>
+						</tr>
+						<tr>
+							<td>Currency</td>
+							<td class="amount">{{ invoice.meta.currency }}</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+
+		<table class="items">
+			<thead>
+				<tr>
+					<th>Description</th>
+					<th class="amount">Qty</th>
+					<th class="amount">Unit</th>
+					<th class="amount">Unit Price</th>
+					<th class="amount">Total</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for item in calculated.formatted_items %}
+				<tr>
+					<td>{{ item.description }}</td>
+					<td class="amount">{{ item.quantity }}</td>
+					<td class="amount">{{ item.unit }}</td>
+					<td class="amount">{{ item.unit_price }}</td>
+					<td class="amount">{{ item.total }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+
+		<div class="totals">
+			<table>
+				<tr>
+					<td class="label">Subtotal</td>
+					<td class="amount">{{ calculated.subtotal }}</td>
+				</tr>
+				<tr>
+					<td class="label">Tax</td>
+					<td class="amount">{{ calculated.total_tax }}</td>
+				</tr>
+				<tr>
+					<td class="grand">Grand Total</td>
+					<td class="grand amount">{{ calculated.grand_total }}</td>
+				</tr>
+			</table>
+		</div>
+
+		<div class="footer">
+			{% if invoice.meta.payment_terms %}
+			<div>Payment Terms: {{ invoice.meta.payment_terms }}</div>
+			{% endif %}
+			{% if invoice.meta.notes %}
+			<div class="notes">Notes: {{ invoice.meta.notes }}</div>
+			{% endif %}
+		</div>
+	</body>
+</html>

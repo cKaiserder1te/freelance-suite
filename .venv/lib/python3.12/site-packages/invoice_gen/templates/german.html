@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="de">
+	<head>
+		<meta charset="utf-8" />
+		<title>Rechnung {{ invoice.meta.number }}</title>
+		<style>
+			:root {
+				--bg: #ffffff;
+				--text: #111827;
+				--muted: #6b7280;
+				--border: #e5e7eb;
+				--accent: #0f172a;
+			}
+
+			* {
+				box-sizing: border-box;
+			}
+
+			body {
+				margin: 0;
+				padding: 40px 32px;
+				background: var(--bg);
+				color: var(--text);
+				font-family: "Helvetica Neue", Arial, sans-serif;
+				font-size: 12px;
+				line-height: 1.6;
+			}
+
+			h1 {
+				margin: 0 0 16px;
+				font-size: 22px;
+				letter-spacing: 0.3px;
+			}
+
+			table {
+				width: 100%;
+				border-collapse: collapse;
+			}
+
+			.header td {
+				vertical-align: top;
+			}
+
+			.sender {
+				font-size: 11px;
+				color: var(--muted);
+			}
+
+			.section {
+				margin-bottom: 20px;
+			}
+
+			.meta td {
+				padding: 4px 0;
+			}
+
+			.items th,
+			.items td {
+				border-bottom: 1px solid var(--border);
+				padding: 8px 6px;
+			}
+
+			.items th {
+				text-transform: uppercase;
+				font-size: 11px;
+				color: var(--muted);
+			}
+
+			.amount {
+				text-align: right;
+			}
+
+			.totals table {
+				width: 45%;
+				margin-left: auto;
+			}
+
+			.totals td {
+				padding: 6px 0;
+			}
+
+			.totals .grand {
+				font-weight: 700;
+				border-top: 1px solid var(--border);
+				padding-top: 8px;
+				color: var(--accent);
+			}
+
+			.tax-note {
+				margin: 16px 0;
+				padding: 10px 12px;
+				border: 1px solid var(--border);
+				background: #f9fafb;
+				font-size: 11px;
+			}
+
+			.footer {
+				margin-top: 24px;
+				font-size: 10px;
+				color: var(--muted);
+			}
+
+			@media print {
+				body {
+					padding: 24px 20px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<table class="header section">
+			<tr>
+				<td>
+					<h1>Rechnung</h1>
+					<div class="sender">
+						<div>{{ invoice.sender.name }}</div>
+						<div>{{ invoice.sender.address }}</div>
+						<div>{{ invoice.sender.email }}</div>
+						{% if invoice.sender.phone %}<div>{{ invoice.sender.phone }}</div>{% endif %}
+						{% if invoice.sender.tax_id %}<div>Steuernummer / USt-IdNr: {{ invoice.sender.tax_id }}</div>{% endif %}
+					</div>
+				</td>
+				<td style="width: 40%;">
+					<table class="meta">
+						<tr>
+							<td>Rechnungsnummer</td>
+							<td class="amount">{{ invoice.meta.number }}</td>
+						</tr>
+						<tr>
+							<td>Rechnungsdatum</td>
+							<td class="amount">{{ invoice.meta.date }}</td>
+						</tr>
+						<tr>
+							<td>Faellig bis</td>
+							<td class="amount">{{ invoice.meta.due_date }}</td>
+						</tr>
+						<tr>
+							<td>Waehrung</td>
+							<td class="amount">{{ invoice.meta.currency }}</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+
+		<div class="section">
+			<strong>Rechnung an</strong><br />
+			{{ invoice.client.name }}<br />
+			{{ invoice.client.address }}
+			{% if invoice.client.email %}<br />{{ invoice.client.email }}{% endif %}
+		</div>
+
+		{% if invoice.sender.tax_note %}
+		<div class="tax-note">{{ invoice.sender.tax_note }}</div>
+		{% endif %}
+
+		<table class="items">
+			<thead>
+				<tr>
+					<th>Leistung</th>
+					<th class="amount">Menge</th>
+					<th class="amount">Einheit</th>
+					<th class="amount">Einzelpreis</th>
+					<th class="amount">Betrag</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for item in calculated.formatted_items %}
+				<tr>
+					<td>{{ item.description }}</td>
+					<td class="amount">{{ item.quantity }}</td>
+					<td class="amount">{{ item.unit }}</td>
+					<td class="amount">{{ item.unit_price }}</td>
+					<td class="amount">{{ item.total }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+
+		<div class="totals section">
+			<table>
+				<tr>
+					<td>Zwischensumme</td>
+					<td class="amount">{{ calculated.subtotal }}</td>
+				</tr>
+				<tr>
+					<td>Umsatzsteuer</td>
+					<td class="amount">{{ calculated.total_tax }}</td>
+				</tr>
+				<tr>
+					<td class="grand">Gesamtbetrag</td>
+					<td class="grand amount">{{ calculated.grand_total }}</td>
+				</tr>
+			</table>
+		</div>
+
+		<div class="section">
+			{% if invoice.meta.payment_terms %}
+			<div>Zahlungsbedingungen: {{ invoice.meta.payment_terms }}</div>
+			{% endif %}
+			{% if invoice.meta.notes %}
+			<div>Hinweise: {{ invoice.meta.notes }}</div>
+			{% endif %}
+		</div>
+
+		<div class="section">
+			<strong>Bankverbindung</strong><br />
+			{% if invoice.sender.bank_iban %}IBAN: {{ invoice.sender.bank_iban }}<br />{% endif %}
+			{% if invoice.sender.bank_bic %}BIC: {{ invoice.sender.bank_bic }}{% endif %}
+		</div>
+
+		<div class="footer">
+			<div>Rechtlicher Hinweis: [Platzhalter fuer gesetzliche Pflichtangaben]</div>
+		</div>
+	</body>
+</html>

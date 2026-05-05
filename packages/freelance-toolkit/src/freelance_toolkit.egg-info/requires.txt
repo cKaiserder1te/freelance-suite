@@ -1,0 +1,13 @@
+typer[all]
+rich
+sqlmodel
+toml
+
+[dev]
+pytest
+black
+ruff
+mypy
+
+[tui]
+textual
